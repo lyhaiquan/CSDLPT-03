@@ -1,0 +1,19 @@
+# Sử dụng node phiên bản mới phù hợp với package.json của ông
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy file quản lý thư viện trước để tối ưu cache
+COPY package.json yarn.lock ./
+
+# Cài đặt dependencies (bao gồm cả devDeps để build TS)
+RUN yarn install
+
+# Copy toàn bộ code vào
+COPY . .
+
+# Build code TypeScript sang JavaScript (lệnh build ông đã định nghĩa)
+RUN yarn build
+
+# Chạy ứng dụng từ thư mục dist
+CMD ["node", "dist/index.js"]
